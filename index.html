@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>تسجيل الدخول</title>
+  <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;font-family:'Alata',sans-serif;background-image:url("https://i.ibb.co/PS9M6NX/BG2-Phone.png" );background-size:cover;background-position:center;background-repeat:no-repeat;height:100vh;display:flex;justify-content:center;align-items:center;color:white}.login-box{background-color:rgba(0,0,0,.75);padding:30px 25px 35px;border-radius:18px;box-shadow:0 0 30px rgba(219,169,53,.8);width:320px;box-sizing:border-box;text-align:center}.login-box h2{margin-bottom:25px;color:#dba935;font-weight:400}input[type=email],input[type=password]{width:100%;padding:12px 15px;margin:12px 0;border-radius:10px;border:none;font-size:16px;outline:0;font-family:inherit;box-sizing:border-box;color:#fff;background-color:#222;transition:none}.password-container{position:relative;width:100%}.toggle-password{position:absolute;top:50%;left:14px;transform:translateY(-50%);width:22px;height:22px;cursor:pointer;background:url('data:image/svg+xml;utf8,<svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' ) no-repeat center;background-size:18px 18px;opacity:.7;transition:opacity .3s}.toggle-password:hover{opacity:1}button{width:100%;padding:12px;margin-top:20px;background:linear-gradient(135deg,#dba935,#999);border:none;border-radius:10px;font-size:17px;color:#000;cursor:pointer;font-weight:700;transition:background .3s}button:hover{background:#dba935;color:#000}.error-msg{color:#ff6666;margin-top:10px;font-size:14px;min-height:20px;text-align:right}
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>تسجيل الدخول</h2>
+    <form id="loginForm">
+      <input id="username" type="email" placeholder="البريد الإلكتروني" required autocomplete="username" />
+      <div class="password-container">
+        <input id="password" type="password" placeholder="كلمة المرور" required autocomplete="current-password" />
+        <div class="toggle-password" title="إظهار / إخفاء كلمة المرور" onclick="togglePasswordVisibility()"></div>
+      </div>
+      <div id="error-msg" class="error-msg"></div>
+      <button id="loginBtn" type="submit">دخول</button>
+    </form>
+  </div>
+
+  <script>
+    // --- التحقق مما إذا كان المستخدم مسجلاً للدخول بالفعل ---
+    const userEmail = localStorage.getItem('userEmail');
+    if (userEmail) {
+      // إذا كان هناك بريد إلكتروني محفوظ، انتقل مباشرة إلى لوحة التحكم
+      window.location.href = 'dashboard.html';
+    }
+
+    // --- دالة إظهار/إخفاء كلمة المرور ---
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById('password');
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    }
+
+    // --- التعامل مع نموذج تسجيل الدخول ---
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const loginBtn = document.getElementById('loginBtn');
+      const errorMsg = document.getElementById('error-msg');
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      // **هذا هو رابط الـ API الخاص بك**
+      const API_URL = "https://script.google.com/macros/s/AKfycbxzcjXMeSubNDfGl0vY3-GwV29xw7SnSRj_UrsUa0mIv0MHiue5hCy79AijTNh6N793/exec";
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'جاري التحقق...';
+      errorMsg.textContent = '';
+
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Apps Script يتطلب هذا الهيدر
+        body: JSON.stringify({ action: 'login', username: username, password: password } )
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.success) {
+          // نجح تسجيل الدخول، احفظ البريد في التخزين المحلي
+          localStorage.setItem('userEmail', response.email);
+          // أعد التوجيه إلى صفحة لوحة التحكم
+          window.location.href = 'dashboard.html';
+        } else {
+          errorMsg.textContent = response.message;
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'دخول';
+        }
+      })
+      .catch(error => {
+        errorMsg.textContent = 'خطأ في الاتصال بالخادم.';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'دخول';
+      });
+    });
+  </script>
+</body>
+</html>
