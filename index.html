@@ -16,7 +16,7 @@
     .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 20px; }
     .datetime-widget { display: flex; align-items: center; gap: 10px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; font-size: 16px; color: var(--light); text-shadow: 0 0 5px var(--gold); }
     .datetime-widget .material-icons { font-size: 20px; color: var(--gold); }
-    .lang-switcher { cursor: pointer; font-weight: bold; font-size: 16px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; color: var(--gold); user-select: none; text-shadow: 0 0 5px var(--gold); }
+    .lang-switcher { cursor: pointer; font-weight: bold; font-size: 16px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; color: var(--gold); user-select: none; text-shadow: 0 0 5px var(--gold); border: none; }
     .login-box{background-color:rgba(0,0,0,.75);padding:30px 25px 35px;border-radius:18px;box-shadow:0 0 30px rgba(219,169,53,.8);width:320px;box-sizing:border-box;text-align:center}
     .login-box h2{margin-bottom:25px;color:#dba935;font-weight:700}
     input[type=text],input[type=password]{width:100%;padding:12px 15px;margin:12px 0;border-radius:10px;border:none;font-size:16px;outline:0;font-family:inherit;box-sizing:border-box;color:#fff;background-color:#222;}
@@ -29,7 +29,7 @@
 <body>
   <div class="top-bar">
     <div class="top-bar-left">
-        <div class="lang-switcher" id="lang-switcher" title="Switch Language">EN</div>
+        <button class="lang-switcher" id="lang-switcher" title="Switch Language" type="button">EN</button>
     </div>
     <div class="top-bar-right">
         <div class="datetime-widget">
@@ -49,45 +49,59 @@
     </form>
   </div>
   <script>
-    const translations = {
-      ar: { login_title: "تسجيل الدخول", username_placeholder: "اسم المستخدم", password_placeholder: "كلمة المرور", login_button: "دخول", verifying: "جاري التحقق...", connection_error: "فشل الاتصال. تحقق من الرابط والإعدادات." },
-      en: { login_title: "Login", username_placeholder: "Username", password_placeholder: "Password", login_button: "Login", verifying: "Verifying...", connection_error: "Connection failed. Check URL and deployment settings." }
-    };
-    let currentLang = localStorage.getItem('lang') || 'ar';
-    function setLanguage(lang) {
-      currentLang = lang; localStorage.setItem('lang', lang);
-      document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-      document.getElementById('lang-switcher').textContent = lang === 'ar' ? 'EN' : 'ع';
-      document.querySelectorAll('[data-translate]').forEach(el => { const key = el.getAttribute('data-translate'); if (translations[lang][key]) el.textContent = translations[lang][key]; });
-      document.querySelectorAll('[data-translate-placeholder]').forEach(el => { const key = el.getAttribute('data-translate-placeholder'); if (translations[lang][key]) el.placeholder = translations[lang][key]; });
-    }
-    function updateClock() {
-      const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Africa/Cairo"}));
-      let hours = now.getHours();
-      document.getElementById('time-icon').textContent = (hours >= 6 && hours < 18) ? 'wb_sunny' : 'nightlight_round';
-      const ampm = hours >= 12 ? 'PM' : 'AM'; hours = hours % 12; hours = hours ? hours : 12;
-      document.getElementById('time').textContent = `${hours.toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} ${ampm}`;
-      document.getElementById('date').textContent = now.toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-GB');
-    }
-    document.getElementById('lang-switcher').addEventListener('click', () => setLanguage(currentLang === 'ar' ? 'en' : 'ar'));
-    if (localStorage.getItem('userData')) { window.location.href = 'dashboard.html'; }
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const loginBtn = document.getElementById('loginBtn'); const errorMsg = document.getElementById('error-msg');
-      const username = document.getElementById('username').value; const password = document.getElementById('password').value;
-      const API_URL = "YOUR_NEW_DEPLOYMENT_URL_HERE"; // *** ضع الرابط الجديد هنا ***
-      loginBtn.disabled = true; loginBtn.textContent = translations[currentLang].verifying; errorMsg.textContent = '';
-      const urlWithParams = new URL(https://script.google.com/macros/s/AKfycbyiYOmLMfEsW336xzKCGiED8iQ6XU4EJxi_4ELI_pAGjg9jw4GC-CkBkkZgyxwpZdZa/exec);
-      urlWithParams.searchParams.append('action', 'login'); urlWithParams.searchParams.append('username', username); urlWithParams.searchParams.append('password', password);
-      fetch(urlWithParams)
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) { localStorage.setItem('userData', JSON.stringify(data.userData)); window.location.href = 'dashboard.html'; }
-        else { errorMsg.textContent = data.message; loginBtn.disabled = false; loginBtn.textContent = translations[currentLang].login_button; }
-      })
-      .catch(error => { errorMsg.textContent = translations[currentLang].connection_error; loginBtn.disabled = false; loginBtn.textContent = translations[currentLang].login_button; });
+    document.addEventListener('DOMContentLoaded', () => {
+      const translations = {
+        ar: { login_title: "تسجيل الدخول", username_placeholder: "اسم المستخدم", password_placeholder: "كلمة المرور", login_button: "دخول", verifying: "جاري التحقق...", connection_error: "فشل الاتصال. تحقق من الرابط والإعدادات." },
+        en: { login_title: "Login", username_placeholder: "Username", password_placeholder: "Password", login_button: "Login", verifying: "Verifying...", connection_error: "Connection failed. Check URL and deployment settings." }
+      };
+      let currentLang = localStorage.getItem('lang') || 'ar';
+
+      function setLanguage(lang) {
+        currentLang = lang; localStorage.setItem('lang', lang);
+        document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.getElementById('lang-switcher').textContent = lang === 'ar' ? 'EN' : 'ع';
+        document.querySelectorAll('[data-translate]').forEach(el => { const key = el.getAttribute('data-translate'); if (translations[lang][key]) el.textContent = translations[lang][key]; });
+        document.querySelectorAll('[data-translate-placeholder]').forEach(el => { const key = el.getAttribute('data-translate-placeholder'); if (translations[lang][key]) el.placeholder = translations[lang][key]; });
+      }
+
+      function updateClock() {
+        const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Africa/Cairo"}));
+        let hours = now.getHours();
+        document.getElementById('time-icon').textContent = (hours >= 6 && hours < 18) ? 'wb_sunny' : 'nightlight_round';
+        const ampm = hours >= 12 ? 'PM' : 'AM'; hours = hours % 12; hours = hours ? hours : 12;
+        document.getElementById('time').textContent = `${hours.toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} ${ampm}`;
+        document.getElementById('date').textContent = now.toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-GB');
+      }
+
+      document.getElementById('lang-switcher').addEventListener('click', () => setLanguage(currentLang === 'ar' ? 'en' : 'ar'));
+      
+      if (localStorage.getItem('userData')) {
+        window.location.href = 'dashboard.html';
+        return; // الخروج من السكريبت لتجنب أي مشاكل
+      }
+
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const loginBtn = document.getElementById('loginBtn'); const errorMsg = document.getElementById('error-msg');
+        const username = document.getElementById('username').value; const password = document.getElementById('password').value;
+        const API_URL = "YOUR_NEW_DEPLOYMENT_URL_HERE"; // *** ضع الرابط الجديد هنا ***
+        loginBtn.disabled = true; loginBtn.textContent = translations[currentLang].verifying; errorMsg.textContent = '';
+        const urlWithParams = new URL(API_URL);
+        urlWithParams.searchParams.append('action', 'login'); urlWithParams.searchParams.append('username', username); urlWithParams.searchParams.append('password', password);
+        fetch(urlWithParams)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) { localStorage.setItem('userData', JSON.stringify(data.userData)); window.location.href = 'dashboard.html'; }
+          else { errorMsg.textContent = data.message; loginBtn.disabled = false; loginBtn.textContent = translations[currentLang].login_button; }
+        })
+        .catch(error => { errorMsg.textContent = translations[currentLang].connection_error; loginBtn.disabled = false; loginBtn.textContent = translations[currentLang].login_button; });
+      });
+
+      // استدعاء الدوال في النهاية بعد تعريف كل شيء
+      setLanguage(currentLang);
+      updateClock();
+      setInterval(updateClock, 1000);
     });
-    document.addEventListener('DOMContentLoaded', () => { setLanguage(currentLang); updateClock(); setInterval(updateClock, 1000); });
   </script>
 </body>
 </html>
