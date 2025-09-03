@@ -16,7 +16,7 @@
     .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 20px; }
     .datetime-widget { display: flex; align-items: center; gap: 10px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; font-size: 16px; color: var(--light); text-shadow: 0 0 5px var(--gold); }
     .datetime-widget .material-icons { font-size: 20px; color: var(--gold); }
-    .lang-switcher { cursor: pointer; font-weight: bold; font-size: 16px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; color: var(--gold); user-select: none; text-shadow: 0 0 5px var(--gold); }
+    .lang-switcher { cursor: pointer; font-weight: bold; font-size: 16px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; color: var(--gold); user-select: none; text-shadow: 0 0 5px var(--gold); border: none; }
     .container{margin:90px auto 40px;padding:20px;max-width:900px;background:rgba(0,0,0,.5);border-radius:15px;box-shadow:0 0 20px rgba(0,0,0,.7);}
     h2{color:var(--gold);margin-bottom:10px; font-weight: 700;}
     .profile-section{display:flex;align-items:center;gap:20px;margin-bottom:25px;flex-wrap:wrap}
@@ -32,7 +32,7 @@
 <body>
   <div class="top-bar">
     <div class="top-bar-left">
-        <div class="lang-switcher" id="lang-switcher" title="Switch Language">EN</div>
+        <button class="lang-switcher" id="lang-switcher" title="Switch Language" type="button">EN</button>
     </div>
     <div class="top-bar-right">
         <div class="datetime-widget">
@@ -40,7 +40,7 @@
             <span id="time"></span>
             <span id="date"></span>
         </div>
-        <div style="color: var(--light);">مرحباً، <span id="userName">...</span></div>
+        <div style="color: var(--light);" data-translate="welcome">مرحباً<span id="userName">...</span></div>
         <button onclick="logout()" style="background:none; border:none; color:var(--gold);font-size:16px; cursor:pointer; font-family: inherit;" data-translate="logout_button">تسجيل خروج</button>
     </div>
   </div>
@@ -62,30 +62,36 @@
     </div>
   </div>
   <script>
-    const translations = {
-      ar: { welcome: "مرحباً", logout_button: "تسجيل خروج", job_title: "المسمى الوظيفي", email_title: "البريد الإلكتروني", projects_card: "المشاريع", timeline_card: "الجدول الزمني", reports_card: "التقارير", contracts_card: "العقود", violations_card: "المخالفات" },
-      en: { welcome: "Welcome", logout_button: "Logout", job_title: "Job Title", email_title: "Email", projects_card: "Projects", timeline_card: "Timeline", reports_card: "Reports", contracts_card: "Contracts", violations_card: "Violations" }
-    };
-    let currentLang = localStorage.getItem('lang') || 'ar';
-    function setLanguage(lang) {
-      currentLang = lang; localStorage.setItem('lang', lang);
-      document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-      document.getElementById('lang-switcher').textContent = lang === 'ar' ? 'EN' : 'ع';
-      document.querySelectorAll('[data-translate]').forEach(el => { const key = el.getAttribute('data-translate'); if (translations[lang][key]) el.textContent = translations[lang][key]; });
-    }
-    function updateClock() {
-      const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Africa/Cairo"}));
-      let hours = now.getHours();
-      document.getElementById('time-icon').textContent = (hours >= 6 && hours < 18) ? 'wb_sunny' : 'nightlight_round';
-      const ampm = hours >= 12 ? 'PM' : 'AM'; hours = hours % 12; hours = hours ? hours : 12;
-      document.getElementById('time').textContent = `${hours.toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} ${ampm}`;
-      document.getElementById('date').textContent = now.toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-GB');
-    }
-    function logout() { localStorage.removeItem('userData'); localStorage.removeItem('lang'); window.location.href = 'index.html'; }
-    document.getElementById('lang-switcher').addEventListener('click', () => setLanguage(currentLang === 'ar' ? 'en' : 'ar'));
     document.addEventListener('DOMContentLoaded', function() {
+      const translations = {
+        ar: { welcome: "مرحباً", logout_button: "تسجيل خروج", job_title: "المسمى الوظيفي", email_title: "البريد الإلكتروني", projects_card: "المشاريع", timeline_card: "الجدول الزمني", reports_card: "التقارير", contracts_card: "العقود", violations_card: "المخالفات" },
+        en: { welcome: "Welcome", logout_button: "Logout", job_title: "Job Title", email_title: "Email", projects_card: "Projects", timeline_card: "Timeline", reports_card: "Reports", contracts_card: "Contracts", violations_card: "Violations" }
+      };
+      let currentLang = localStorage.getItem('lang') || 'ar';
+
+      function setLanguage(lang) {
+        currentLang = lang; localStorage.setItem('lang', lang);
+        document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.getElementById('lang-switcher').textContent = lang === 'ar' ? 'EN' : 'ع';
+        document.querySelectorAll('[data-translate]').forEach(el => { const key = el.getAttribute('data-translate'); if (translations[lang][key]) el.textContent = translations[lang][key]; });
+      }
+
+      function updateClock() {
+        const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Africa/Cairo"}));
+        let hours = now.getHours();
+        document.getElementById('time-icon').textContent = (hours >= 6 && hours < 18) ? 'wb_sunny' : 'nightlight_round';
+        const ampm = hours >= 12 ? 'PM' : 'AM'; hours = hours % 12; hours = hours ? hours : 12;
+        document.getElementById('time').textContent = `${hours.toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} ${ampm}`;
+        document.getElementById('date').textContent = now.toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-GB');
+      }
+
+      function logout() { localStorage.removeItem('userData'); localStorage.removeItem('lang'); window.location.href = 'index.html'; }
+      
+      document.getElementById('lang-switcher').addEventListener('click', () => setLanguage(currentLang === 'ar' ? 'en' : 'ar'));
+      
       const userDataString = localStorage.getItem('userData');
       if (!userDataString) { logout(); return; }
+
       try {
         const userData = JSON.parse(userDataString);
         document.getElementById('userName').textContent = `, ${userData.empName}`;
@@ -101,7 +107,11 @@
           if (userData.permissions.violations) document.getElementById('cardViolations').classList.add('active');
         }
       } catch (e) { alert("خطأ في قراءة البيانات. سيتم تسجيل الخروج."); logout(); }
-      setLanguage(currentLang); updateClock(); setInterval(updateClock, 1000);
+      
+      // استدعاء الدوال في النهاية بعد تعريف كل شيء
+      setLanguage(currentLang);
+      updateClock();
+      setInterval(updateClock, 1000);
     });
   </script>
 </body>
