@@ -1,33 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
-  <!-- ... نفس الـ head ... -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="https://i.ibb.co/6n0x9G6/user.png">
+  <title>لوحة التحكم</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    :root{--gold:#dba935;--light:#f0f0f0;--dark:#222}
+    body{margin:0;font-family:'Cairo', sans-serif;background-image:url("https://i.ibb.co/PS9M6NX/BG2-Phone.png" );background-size:cover;background-attachment:fixed;color:var(--light);min-height:100vh;}
+    .top-bar{position:fixed;top:0;width:100%;background:rgba(0,0,0,.6);display:flex;justify-content:flex-end;align-items:center;padding:10px 20px;color:var(--gold);font-size:18px;gap:15px;box-shadow:0 0 10px rgba(0,0,0,.8);z-index:1000;box-sizing:border-box}
+    .container{margin:90px auto 40px;padding:20px;max-width:900px;background:rgba(0,0,0,.5);border-radius:15px;box-shadow:0 0 20px rgba(0,0,0,.7); visibility: hidden; /* إخفاء المحتوى حتى يتم تحميله */}
+    h2{color:var(--gold);margin-bottom:10px; font-weight: 700;}
+    .profile-section{display:flex;align-items:center;gap:20px;margin-bottom:25px;flex-wrap:wrap}
+    .profile-img{width:100px;height:100px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;box-shadow:0 0 10px var(--gold)}
+    .profile-data p{margin:4px 0;font-size:18px}
+    .cards{display:flex;gap:20px;flex-wrap:wrap; justify-content: center;}
+    .card{background:var(--dark);flex:1 1 150px;max-width:150px;border-radius:12px;text-align:center;padding:15px 10px;cursor:pointer;box-shadow:0 0 10px rgba(219,169,53,.7);transition:transform .3s;color:var(--gold);display:none; font-weight: 700;}
+    .card.active{display:block}
+  </style>
 </head>
 <body>
-  <!-- ... نفس الـ body ... -->
+  <div class="top-bar">
+    <div>مرحباً، <span id="userName">...</span></div>
+    <button onclick="logout()" style="background:none; border:none; color:var(--gold);font-size:16px; cursor:pointer;">تسجيل خروج</button>
+  </div>
+  <div class="container">
+    <div class="profile-section">
+      <img id="profileImg" class="profile-img" src="https://i.ibb.co/6n0x9G6/user.png" alt="صورة المستخدم" />
+      <div class="profile-data">
+        <h2 id="empName">جاري التحميل...</h2>
+        <p>المسمى الوظيفي: <span id="empJob">...</span></p>
+        <p>البريد الإلكتروني: <span id="empEmail">...</span></p>
+      </div>
+    </div>
+    <div class="cards">
+      <div id="cardProjects" class="card"><i class="material-icons">folder</i>المشاريع</div>
+      <div id="cardTimeline" class="card"><i class="material-icons">timeline</i>الجدول الزمني</div>
+      <div id="cardReports" class="card"><i class="material-icons">bar_chart</i>التقارير</div>
+      <div id="cardContracts" class="card"><i class="material-icons">gavel</i>العقود</div>
+      <div id="cardViolations" class="card"><i class="material-icons">error</i>المخالفات</div>
+    </div>
+  </div>
+
   <script>
-    function logout() {
+    function logout( ) {
       localStorage.removeItem('userData');
       window.location.href = 'index.html';
     }
+
+    // دالة آمنة لتحديث المحتوى
+    function safeSetText(id, text) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.textContent = text || '...'; // وضع قيمة افتراضية إذا كان النص فارغًا
+      } else {
+        console.error(`Element with id "${id}" not found.`);
+      }
+    }
+
+    // دالة آمنة لتحديث الصور
+    function safeSetSrc(id, src) {
+        const element = document.getElementById(id);
+        if(element) {
+            element.src = src || 'https://i.ibb.co/6n0x9G6/user.png'; // صورة افتراضية
+        } else {
+            console.error(`Element with id "${id}" not found.` );
+        }
+    }
+
+    // دالة آمنة لإظهار البطاقات
+    function safeActivateCard(id) {
+        const element = document.getElementById(id);
+        if(element) {
+            element.classList.add('active');
+        } else {
+            console.error(`Card with id "${id}" not found.`);
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       const userDataString = localStorage.getItem('userData');
       if (!userDataString) {
-        alert("لم يتم العثور على بيانات المستخدم. سيتم تسجيل الخروج.");
         logout();
         return;
       }
+
       try {
         const userData = JSON.parse(userDataString);
-        // **لا يوجد fetch!** نعرض البيانات مباشرة
-        document.getElementById('userName').textContent = userData.empName;
-        document.getElementById('empName').textContent = userData.empName;
-        document.getElementById('empJob').textContent = userData.empJob;
-        document.getElementById('empEmail').textContent = userData.empEmail;
-        document.getElementById('profileImg').src = userData.profileImg;
-        // ... بقية كود عرض البطاقات ...
+        
+        // استخدام الدوال الآمنة لتعبئة البيانات
+        safeSetText('userName', userData.empName);
+        safeSetText('empName', userData.empName);
+        safeSetText('empJob', userData.empJob);
+        safeSetText('empEmail', userData.empEmail);
+        safeSetSrc('profileImg', userData.profileImg);
+
+        if (userData.permissions) {
+            if (userData.permissions.projects) safeActivateCard('cardProjects');
+            if (userData.permissions.timeline) safeActivateCard('cardTimeline');
+            if (userData.permissions.reports) safeActivateCard('cardReports');
+            if (userData.permissions.contracts) safeActivateCard('cardContracts');
+            if (userData.permissions.violations) safeActivateCard('cardViolations');
+        }
+        
+        // إظهار المحتوى بعد تحميله بنجاح
+        const container = document.querySelector('.container');
+        if(container) {
+            container.style.visibility = 'visible';
+        }
+
       } catch (e) {
-        alert("خطأ في قراءة بيانات المستخدم.");
+        alert("خطأ في قراءة بيانات المستخدم: " + e.message);
         logout();
       }
     });
