@@ -31,17 +31,23 @@
       window.location.href = 'dashboard.html';
     }
 
+    // --- دالة JSONP المصححة ---
     function jsonpRequest(url, data, callback) {
         const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-        window[callbackName] = function(data) {
+        window[callbackName] = function(response) {
             delete window[callbackName];
             document.body.removeChild(script);
-            callback(data);
+            callback(response);
         };
 
         const script = document.createElement('script');
-        const encodedData = btoa(JSON.stringify(data)); // تشفير البيانات
-        script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName + '&p=' + encodedData;
+        // btoa() لتشفير البيانات إلى Base64
+        // encodeURIComponent() للتأكد من أن النص المشفر آمن للإرسال في الرابط
+        const encodedData = encodeURIComponent(btoa(JSON.stringify(data)));
+        
+        // بناء الرابط بالشكل الصحيح
+        script.src = `${url}?callback=${callbackName}&p=${encodedData}`;
+        
         document.body.appendChild(script);
     }
 
