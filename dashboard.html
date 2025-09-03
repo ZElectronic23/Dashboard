@@ -1,1 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" style="scrollbar-gutter: stable; direction: rtl;">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة الموظف | Employee Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Alata&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    :root{--gold:#dba935;--silver:#c0c0c0;--light:#f0f0f0;--dark:#222}body{margin:0;font-family:'Alata',sans-serif;background-image:url("https://i.ibb.co/PS9M6NX/BG2-Phone.png" );background-size:cover;background-attachment:fixed;background-repeat:no-repeat;color:var(--light);min-height:100vh}.top-bar{position:fixed;top:0;width:100%;background:rgba(0,0,0,.6);display:flex;justify-content:space-between;align-items:center;padding:10px 20px;color:var(--gold);font-size:18px;gap:15px;box-shadow:0 0 10px rgba(0,0,0,.8);z-index:1000;box-sizing:border-box}.container{margin:90px auto 40px;padding:20px;max-width:900px;background:rgba(0,0,0,.5);border-radius:15px;box-shadow:0 0 20px rgba(0,0,0,.7)}h2{color:var(--gold);margin-bottom:10px}.profile-section{display:flex;align-items:center;gap:20px;margin-bottom:25px;flex-wrap:wrap}.profile-img{width:100px;height:100px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;box-shadow:0 0 10px var(--gold)}.profile-data p{margin:4px 0;font-size:18px}.cards{display:flex;gap:20px;flex-wrap:wrap}.card{background:var(--dark);flex:1 1 150px;max-width:150px;border-radius:12px;text-align:center;padding:15px 10px;cursor:pointer;box-shadow:0 0 10px rgba(219,169,53,.7);transition:transform .3s;color:var(--gold);display:none}.card.active{display:block}.card:hover{transform:scale(1.05);background:var(--gold);color:var(--dark);box-shadow:0 0 20px rgba(219,169,53,1)}.card i.material-icons{font-size:48px;margin-bottom:8px}
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <div>مرحباً، <span id="userName">...</span></div>
+    <button onclick="logout()" style="background:none; border:none; color:var(--gold);font-size:16px; cursor:pointer;">تسجيل خروج</button>
+  </div>
+  <div class="container">
+    <div class="profile-section">
+      <img id="profileImg" class="profile-img" src="https://i.ibb.co/6n0x9G6/user.png" alt="صورة المستخدم" />
+      <div class="profile-data">
+        <h2 id="empName">جاري التحميل...</h2>
+        <p>المسمى الوظيفي: <span id="empJob">...</span></p>
+        <p>البريد الإلكتروني: <span id="empEmail">...</span></p>
+      </div>
+    </div>
+    <div class="cards">
+      <div id="cardProjects" class="card"><i class="material-icons">folder</i>المشاريع</div>
+      <div id="cardTimeline" class="card"><i class="material-icons">timeline</i>الجدول الزمني</div>
+      <div id="cardReports" class="card"><i class="material-icons">bar_chart</i>التقارير</div>
+      <div id="cardContracts" class="card"><i class="material-icons">gavel</i>العقود</div>
+      <div id="cardViolations" class="card"><i class="material-icons">error</i>المخالفات</div>
+    </div>
+  </div>
+
+  <script>
+    // --- دالة تسجيل الخروج ---
+    function logout( ) {
+      localStorage.removeItem('userEmail'); // حذف البريد من التخزين
+      window.location.href = 'index.html'; // العودة لصفحة الدخول
+    }
+
+    // --- جلب بيانات المستخدم عند تحميل الصفحة ---
+    document.addEventListener('DOMContentLoaded', function() {
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) {
+        // إذا لم يكن المستخدم مسجلاً للدخول، أعده لصفحة الدخول
+        logout();
+        return;
+      }
+
+      const API_URL = "https://script.google.com/macros/s/AKfycbxzcjXMeSubNDfGl0vY3-GwV29xw7SnSRj_UrsUa0mIv0MHiue5hCy79AijTNh6N793/exec";
+
+      // جلب بيانات المستخدم من الـ API
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'getUserData', email: userEmail } )
+      })
+      .then(res => res.json())
+      .then(response => {
+        if (response.success) {
+          const userData = response.data;
+          // تعبئة البيانات في الصفحة
+          document.getElementById('userName').textContent = userData.empName;
+          document.getElementById('empName').textContent = userData.empName;
+          document.getElementById('empJob').textContent = userData.empJob;
+          document.getElementById('empEmail').textContent = userData.empEmail;
+          document.getElementById('profileImg').src = userData.profileImg;
+
+          // إظهار البطاقات بناءً على الصلاحيات
+          if (userData.permissions.projects) document.getElementById('cardProjects').classList.add('active');
+          if (userData.permissions.timeline) document.getElementById('cardTimeline').classList.add('active');
+          // ... وهكذا لباقي الصلاحيات
+        } else {
+          // إذا حدث خطأ (مثل انتهاء صلاحية الرابط)، قم بتسجيل الخروج
+          alert('حدث خطأ أثناء جلب بياناتك. يرجى تسجيل الدخول مرة أخرى.');
+          logout();
+        }
+      })
+      .catch(error => {
+        alert('فشل الاتصال بالخادم. يرجى المحاولة مرة أخرى.');
+        logout();
+      });
+    });
+  </script>
+</body>
+</html>
 
