@@ -2,28 +2,24 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Z.Electronic | Login</title>
-  <link rel="icon" type="image/x-icon" href="LOGO ICO.png"> 
- 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="icon" type="image/png" href="https://i.ibb.co/6n0x9G6/user.png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    :root{--gold:#dba935;--light:#f0f0f0; --silver: #c0c0c0;}
+    :root{--gold:#dba935;--light:#f0f0f0;--dark:#222; --silver: #c0c0c0;}
     body{margin:0;font-family:'Cairo',sans-serif;background-image:url("https://i.ibb.co/PS9M6NX/BG2-Phone.png" );background-size:cover;background-position:center;background-repeat:no-repeat;height:100vh;display:flex;justify-content:center;align-items:center;color:white;transition: all 0.3s ease;}
-    .top-bar{position:fixed;top:0;left:0;right:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 20px;z-index:1000;box-sizing:border-box}
-    .top-bar-left { position: absolute; left: 20px; }
-    .top-bar-right { position: absolute; right: 20px; }
-    .datetime-widget { display: flex; align-items: center; gap: 10px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; font-size: 16px; color: var(--light); text-shadow: 0 0 5px var(--gold); }
-    .datetime-widget .material-icons { font-size: 20px; color: var(--gold); }
-    /* --- التعديل المطلوب: تغيير لون زر اللغة --- */
-    .lang-switcher { cursor: pointer; font-weight: bold; font-size: 16px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; color: var(--silver); user-select: none; text-shadow: 0 0 5px var(--silver); border: none; }
-    .login-box{background-color:rgba(0,0,0,.75);padding:30px 25px 35px;border-radius:18px;box-shadow:0 0 30px rgba(219,169,53,.8);width:320px;box-sizing:border-box;text-align:center}
-    .login-box h2{margin-bottom:25px;color:#dba935;font-weight:700}
-    input[type=text],input[type=password]{width:100%;padding:12px 15px;margin:12px 0;border-radius:10px;border:none;font-size:16px;outline:0;font-family:inherit;box-sizing:border-box;color:#fff;background-color:#222;}
-    button{width:100%;padding:12px;margin-top:20px;background:linear-gradient(135deg,#dba935,#999);border:none;border-radius:10px;font-size:17px;color:#000;cursor:pointer;font-weight:700;transition:background .3s}
+    .top-bar{position:fixed;top:0;left:0;right:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:8px 15px;z-index:1000;box-sizing:border-box}
+    .top-bar-left { position: absolute; left: 15px; }
+    .top-bar-right { position: absolute; right: 15px; }
+    .datetime-widget { display: flex; align-items: center; gap: 8px; background-color: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 20px; font-size: 14px; color: var(--light); text-shadow: 0 0 5px var(--gold); }
+    .datetime-widget .material-icons { font-size: 18px; color: var(--gold); }
+    .lang-switcher { cursor: pointer; font-weight: bold; font-size: 14px; background-color: var(--silver); color: black; padding: 5px 10px; border-radius: 20px; user-select: none; border: none; }
+    .login-box{background-color:rgba(0,0,0,.75);padding:30px 25px 35px;border-radius:18px;box-shadow:0 0 30px rgba(219,169,53,.8);width:100%;max-width:360px;text-align:center}
+    .login-box h2{margin-bottom:25px;color:var(--gold);font-weight:700}
+    .login-box input{width:100%;padding:12px 15px;margin:12px 0;border-radius:10px;border:none;font-size:16px;outline:0;font-family:inherit;color:#fff;background-color:#222;}
+    .login-box button{width:100%;padding:12px;margin-top:20px;background:linear-gradient(135deg,#dba935,#999);border:none;border-radius:10px;font-size:17px;color:#000;cursor:pointer;font-weight:700;}
     .error-msg{color:#ff6666;margin-top:10px;font-size:14px;min-height:20px;}
     html[dir="rtl"] .error-msg { text-align: right; }
     html[dir="ltr"] .error-msg { text-align: left; }
@@ -53,6 +49,8 @@
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      const API_URL = "https://script.google.com/macros/s/AKfycbxIFHzm5K7bQr1Pat_jZwevUqnkz-cgtNnAd4z_lygzd78olctaeYshbeq1_zvA78-O/exec"; // <---!!! مهم جدًا
+      if (localStorage.getItem('userData')) { window.location.href = 'dashboard.html'; return; }
       const translations = {
         ar: { login_title: "تسجيل الدخول", username_placeholder: "اسم المستخدم", password_placeholder: "كلمة المرور", login_button: "دخول", verifying: "جاري التحقق...", connection_error: "فشل الاتصال. تحقق من الرابط والإعدادات." },
         en: { login_title: "Login", username_placeholder: "Username", password_placeholder: "Password", login_button: "Login", verifying: "Verifying...", connection_error: "Connection failed. Check URL and deployment settings." }
@@ -74,22 +72,34 @@
         document.getElementById('date').textContent = now.toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-GB');
       }
       document.getElementById('lang-switcher').addEventListener('click', () => setLanguage(currentLang === 'ar' ? 'en' : 'ar'));
-      if (localStorage.getItem('userData')) { window.location.href = 'dashboard.html'; return; }
       document.getElementById('loginForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const loginBtn = document.getElementById('loginBtn'); const errorMsg = document.getElementById('error-msg');
         const username = document.getElementById('username').value; const password = document.getElementById('password').value;
-        const API_URL = "YOUR_NEW_DEPLOYMENT_URL_HERE"; // *** ضع الرابط الجديد هنا ***
         loginBtn.disabled = true; loginBtn.textContent = translations[currentLang].verifying; errorMsg.textContent = '';
         const urlWithParams = new URL(API_URL);
-        urlWithParams.searchParams.append('action', 'login'); urlWithParams.searchParams.append('username', username); urlWithParams.searchParams.append('password', password);
-        fetch(urlWithParams)
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) { localStorage.setItem('userData', JSON.stringify(data.userData)); window.location.href = 'dashboard.html'; }
-          else { errorMsg.textContent = data.message; loginBtn.disabled = false; loginBtn.textContent = translations[currentLang].login_button; }
+        urlWithParams.searchParams.append('action', 'login');
+        urlWithParams.searchParams.append('username', username);
+        urlWithParams.searchParams.append('password', password);
+        fetch(urlWithParams, { method: 'GET', redirect: 'follow' })
+        .then(response => {
+            if (!response.ok) { throw new Error('Network response was not ok'); }
+            return response.json();
         })
-        .catch(error => { errorMsg.textContent = translations[currentLang].connection_error; loginBtn.disabled = false; loginBtn.textContent = translations[currentLang].login_button; });
+        .then(data => {
+          if (data.success && data.userData) {
+            localStorage.setItem('userData', JSON.stringify(data.userData));
+            window.location.href = 'dashboard.html';
+          } else {
+            errorMsg.textContent = data.message || "خطأ غير معروف";
+            loginBtn.disabled = false; loginBtn.textContent = translations[currentLang].login_button;
+          }
+        })
+        .catch(error => {
+          console.error('Fetch Error:', error);
+          errorMsg.textContent = translations[currentLang].connection_error;
+          loginBtn.disabled = false; loginBtn.textContent = translations[currentLang].login_button;
+        });
       });
       setLanguage(currentLang); updateClock(); setInterval(updateClock, 1000);
     });
