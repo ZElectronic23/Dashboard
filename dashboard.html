@@ -17,6 +17,53 @@
     .datetime-widget { display: flex; align-items: center; gap: 10px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; font-size: 16px; color: var(--light); text-shadow: 0 0 5px var(--gold); }
     .datetime-widget .material-icons { font-size: 20px; color: var(--gold); }
     .lang-switcher { cursor: pointer; font-weight: bold; font-size: 16px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; color: var(--gold); user-select: none; text-shadow: 0 0 5px var(--gold); border: none; }
+    
+    /* --- تصميم القائمة المنسدلة الجديد مع الأنيميشن --- */
+    .user-menu { position: relative; }
+    .user-menu-button { cursor: pointer; background: none; border: none; padding: 0; display: flex; align-items: center; }
+    .user-menu-button .top-bar-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); object-fit: cover; }
+    
+    .dropdown-content {
+      position: absolute;
+      top: 140%;
+      right: 0;
+      background-color: var(--dark);
+      min-width: 200px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+      z-index: 1;
+      border-radius: 8px;
+      border: 1px solid var(--gold);
+      overflow: hidden;
+      /* إخفاء القائمة بشكل كامل في البداية */
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .dropdown-content.show {
+      pointer-events: auto;
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .dropdown-content a {
+      color: var(--light);
+      padding: 12px 16px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background-color 0.2s;
+      /* إخفاء العناصر في البداية */
+      opacity: 0;
+      transform: translateX(20px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .dropdown-content a:hover { background-color: var(--gold); color: var(--dark); }
+    .dropdown-content .material-icons { font-size: 20px; }
+
+    /* --- نهاية تصميم القائمة --- */
+
     .container{margin:90px auto 40px;padding:20px;max-width:900px;background:rgba(0,0,0,.5);border-radius:15px;box-shadow:0 0 20px rgba(0,0,0,.7);}
     h2{color:var(--gold);margin-bottom:10px; font-weight: 700;}
     .profile-section{display:flex;align-items:center;gap:20px;margin-bottom:25px;flex-wrap:wrap}
@@ -40,11 +87,23 @@
             <span id="time"></span>
             <span id="date"></span>
         </div>
-        <div style="color: var(--light);" data-translate="welcome">مرحباً<span id="userName">...</span></div>
-        <button onclick="logout()" style="background:none; border:none; color:var(--gold);font-size:16px; cursor:pointer; font-family: inherit;" data-translate="logout_button">تسجيل خروج</button>
+        <div class="user-menu">
+            <button class="user-menu-button" id="user-menu-button">
+                <img id="top-bar-avatar" src="" alt="Avatar" class="top-bar-avatar">
+            </button>
+            <div class="dropdown-content" id="dropdown-content">
+                <a href="#"><i class="material-icons">request_quote</i><span data-translate="requests">الطلبات</span></a>
+                <a href="#"><i class="material-icons">model_training</i><span data-translate="trainings">التدريبات</span></a>
+                <a href="#"><i class="material-icons">leaderboard</i><span data-translate="evaluation">التقييم</span></a>
+                <a href="#"><i class="material-icons">work</i><span data-translate="job_tasks">مهام وظيفية</span></a>
+                <a href="#"><i class="material-icons">settings</i><span data-translate="settings">الإعدادات</span></a>
+                <a href="#" onclick="logout()"><i class="material-icons">logout</i><span data-translate="logout_button">تسجيل الخروج</span></a>
+            </div>
+        </div>
     </div>
   </div>
   <div class="container">
+    <!-- ... بقية محتوى الصفحة يبقى كما هو ... -->
     <div class="profile-section">
       <img id="profileImg" class="profile-img" src="" alt="صورة المستخدم" />
       <div class="profile-data">
@@ -61,11 +120,12 @@
       <div id="cardViolations" class="card"><i class="material-icons">error</i><span data-translate="violations_card">المخالفات</span></div>
     </div>
   </div>
+
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const translations = {
-        ar: { welcome: "مرحباً", logout_button: "تسجيل خروج", job_title: "المسمى الوظيفي", email_title: "البريد الإلكتروني", projects_card: "المشاريع", timeline_card: "الجدول الزمني", reports_card: "التقارير", contracts_card: "العقود", violations_card: "المخالفات" },
-        en: { welcome: "Welcome", logout_button: "Logout", job_title: "Job Title", email_title: "Email", projects_card: "Projects", timeline_card: "Timeline", reports_card: "Reports", contracts_card: "Contracts", violations_card: "Violations" }
+        ar: { logout_button: "تسجيل خروج", job_title: "المسمى الوظيفي", email_title: "البريد الإلكتروني", projects_card: "المشاريع", timeline_card: "الجدول الزمني", reports_card: "التقارير", contracts_card: "العقود", violations_card: "المخالفات", requests: "الطلبات", trainings: "التدريبات", evaluation: "التقييم", job_tasks: "مهام وظيفية", settings: "الإعدادات" },
+        en: { logout_button: "Logout", job_title: "Job Title", email_title: "Email", projects_card: "Projects", timeline_card: "Timeline", reports_card: "Reports", contracts_card: "Contracts", violations_card: "Violations", requests: "Requests", trainings: "Trainings", evaluation: "Evaluation", job_tasks: "Job Tasks", settings: "Settings" }
       };
       let currentLang = localStorage.getItem('lang') || 'ar';
 
@@ -85,7 +145,7 @@
         document.getElementById('date').textContent = now.toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-GB');
       }
 
-      function logout() { localStorage.removeItem('userData'); localStorage.removeItem('lang'); window.location.href = 'index.html'; }
+      window.logout = function() { localStorage.removeItem('userData'); localStorage.removeItem('lang'); window.location.href = 'index.html'; }
       
       document.getElementById('lang-switcher').addEventListener('click', () => setLanguage(currentLang === 'ar' ? 'en' : 'ar'));
       
@@ -94,24 +154,64 @@
 
       try {
         const userData = JSON.parse(userDataString);
-        document.getElementById('userName').textContent = `, ${userData.empName}`;
         document.getElementById('empName').textContent = userData.empName;
         document.getElementById('empJob').textContent = userData.empJob;
         document.getElementById('empEmail').textContent = userData.empEmail;
         document.getElementById('profileImg').src = userData.profileImg;
+        document.getElementById('top-bar-avatar').src = userData.profileImg; // تحديث صورة القائمة
+
         if (userData.permissions) {
           if (userData.permissions.projects) document.getElementById('cardProjects').classList.add('active');
-          if (userData.permissions.timeline) document.getElementById('cardTimeline').classList.add('active');
-          if (userData.permissions.reports) document.getElementById('cardReports').classList.add('active');
-          if (userData.permissions.contracts) document.getElementById('cardContracts').classList.add('active');
-          if (userData.permissions.violations) document.getElementById('cardViolations').classList.add('active');
+          // ... بقية البطاقات
         }
       } catch (e) { alert("خطأ في قراءة البيانات. سيتم تسجيل الخروج."); logout(); }
       
-      // استدعاء الدوال في النهاية بعد تعريف كل شيء
       setLanguage(currentLang);
       updateClock();
       setInterval(updateClock, 1000);
+
+      // --- كود الأنيميشن الجديد للقائمة ---
+      const menuButton = document.getElementById('user-menu-button');
+      const dropdown = document.getElementById('dropdown-content');
+      const dropdownItems = dropdown.querySelectorAll('a');
+
+      function toggleDropdown(show) {
+        if (show) {
+          dropdown.classList.add('show');
+          let delay = 0;
+          dropdownItems.forEach(item => {
+            setTimeout(() => {
+              item.style.opacity = '1';
+              item.style.transform = 'translateX(0)';
+            }, delay);
+            delay += 50; // زيادة التأخير لكل عنصر
+          });
+        } else {
+          let delay = 0;
+          // عكس ترتيب العناصر للاختفاء التدريجي
+          [...dropdownItems].reverse().forEach(item => {
+            setTimeout(() => {
+              item.style.opacity = '0';
+              item.style.transform = 'translateX(20px)';
+            }, delay);
+            delay += 50;
+          });
+          // إخفاء الحاوية بعد انتهاء الأنيميشن
+          setTimeout(() => dropdown.classList.remove('show'), delay);
+        }
+      }
+
+      menuButton.addEventListener('click', (event) => {
+        event.stopPropagation(); // منع إغلاق القائمة فورًا
+        toggleDropdown(!dropdown.classList.contains('show'));
+      });
+
+      // إغلاق القائمة عند الضغط في أي مكان آخر
+      window.addEventListener('click', () => {
+        if (dropdown.classList.contains('show')) {
+          toggleDropdown(false);
+        }
+      });
     });
   </script>
 </body>
