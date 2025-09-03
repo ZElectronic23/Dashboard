@@ -10,19 +10,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
-    :root{--gold:#dba935;--light:#f0f0f0;}
+    :root{--gold:#dba935;--light:#f0f0f0; --silver: #c0c0c0;}
     body{margin:0;font-family:'Cairo',sans-serif;background-image:url("https://i.ibb.co/PS9M6NX/BG2-Phone.png" );background-size:cover;background-position:center;background-repeat:no-repeat;height:100vh;display:flex;justify-content:center;align-items:center;color:white;transition: all 0.3s ease;}
-    .top-bar{position:fixed;top:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 20px;z-index:1000;box-sizing:border-box}
-    .top-bar-left, .top-bar-right { display: flex; align-items: center; gap: 20px; }
+    .top-bar{position:fixed;top:0;left:0;right:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:10px 20px;z-index:1000;box-sizing:border-box}
+    .top-bar-left { position: absolute; left: 20px; }
+    .top-bar-right { position: absolute; right: 20px; }
     .datetime-widget { display: flex; align-items: center; gap: 10px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; font-size: 16px; color: var(--light); text-shadow: 0 0 5px var(--gold); }
     .datetime-widget .material-icons { font-size: 20px; color: var(--gold); }
-    .lang-switcher { cursor: pointer; font-weight: bold; font-size: 16px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; color: var(--gold); user-select: none; text-shadow: 0 0 5px var(--gold); border: none; }
+    /* --- التعديل المطلوب: تغيير لون زر اللغة --- */
+    .lang-switcher { cursor: pointer; font-weight: bold; font-size: 16px; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; color: var(--silver); user-select: none; text-shadow: 0 0 5px var(--silver); border: none; }
     .login-box{background-color:rgba(0,0,0,.75);padding:30px 25px 35px;border-radius:18px;box-shadow:0 0 30px rgba(219,169,53,.8);width:320px;box-sizing:border-box;text-align:center}
     .login-box h2{margin-bottom:25px;color:#dba935;font-weight:700}
     input[type=text],input[type=password]{width:100%;padding:12px 15px;margin:12px 0;border-radius:10px;border:none;font-size:16px;outline:0;font-family:inherit;box-sizing:border-box;color:#fff;background-color:#222;}
     button{width:100%;padding:12px;margin-top:20px;background:linear-gradient(135deg,#dba935,#999);border:none;border-radius:10px;font-size:17px;color:#000;cursor:pointer;font-weight:700;transition:background .3s}
-    .error-msg{color:#ff6666;margin-top:10px;font-size:14px;min-height:20px;text-align:right}
-    html[dir="ltr"] .top-bar { flex-direction: row-reverse; }
+    .error-msg{color:#ff6666;margin-top:10px;font-size:14px;min-height:20px;}
+    html[dir="rtl"] .error-msg { text-align: right; }
     html[dir="ltr"] .error-msg { text-align: left; }
   </style>
 </head>
@@ -55,7 +57,6 @@
         en: { login_title: "Login", username_placeholder: "Username", password_placeholder: "Password", login_button: "Login", verifying: "Verifying...", connection_error: "Connection failed. Check URL and deployment settings." }
       };
       let currentLang = localStorage.getItem('lang') || 'ar';
-
       function setLanguage(lang) {
         currentLang = lang; localStorage.setItem('lang', lang);
         document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
@@ -63,7 +64,6 @@
         document.querySelectorAll('[data-translate]').forEach(el => { const key = el.getAttribute('data-translate'); if (translations[lang][key]) el.textContent = translations[lang][key]; });
         document.querySelectorAll('[data-translate-placeholder]').forEach(el => { const key = el.getAttribute('data-translate-placeholder'); if (translations[lang][key]) el.placeholder = translations[lang][key]; });
       }
-
       function updateClock() {
         const now = new Date(new Date().toLocaleString("en-US", {timeZone: "Africa/Cairo"}));
         let hours = now.getHours();
@@ -72,19 +72,13 @@
         document.getElementById('time').textContent = `${hours.toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} ${ampm}`;
         document.getElementById('date').textContent = now.toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-GB');
       }
-
       document.getElementById('lang-switcher').addEventListener('click', () => setLanguage(currentLang === 'ar' ? 'en' : 'ar'));
-      
-      if (localStorage.getItem('userData')) {
-        window.location.href = 'dashboard.html';
-        return; // الخروج من السكريبت لتجنب أي مشاكل
-      }
-
+      if (localStorage.getItem('userData')) { window.location.href = 'dashboard.html'; return; }
       document.getElementById('loginForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const loginBtn = document.getElementById('loginBtn'); const errorMsg = document.getElementById('error-msg');
         const username = document.getElementById('username').value; const password = document.getElementById('password').value;
-        const API_URL = "https://script.google.com/macros/s/AKfycbxY4jHtUguk_pjowbt7-bbYNoMoBbe5G8qX7rJBA_4oRvWh39dfz4CNgB-se-9sgwVJ/exec"; // *** ضع الرابط الجديد هنا ***
+        const API_URL = "YOUR_NEW_DEPLOYMENT_URL_HERE"; // *** ضع الرابط الجديد هنا ***
         loginBtn.disabled = true; loginBtn.textContent = translations[currentLang].verifying; errorMsg.textContent = '';
         const urlWithParams = new URL(API_URL);
         urlWithParams.searchParams.append('action', 'login'); urlWithParams.searchParams.append('username', username); urlWithParams.searchParams.append('password', password);
@@ -96,11 +90,7 @@
         })
         .catch(error => { errorMsg.textContent = translations[currentLang].connection_error; loginBtn.disabled = false; loginBtn.textContent = translations[currentLang].login_button; });
       });
-
-      // استدعاء الدوال في النهاية بعد تعريف كل شيء
-      setLanguage(currentLang);
-      updateClock();
-      setInterval(updateClock, 1000);
+      setLanguage(currentLang); updateClock(); setInterval(updateClock, 1000);
     });
   </script>
 </body>
