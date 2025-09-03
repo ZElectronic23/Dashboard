@@ -12,7 +12,6 @@
     input[type="text"],input[type="password"]{width:100%;padding:12px 15px;margin:12px 0;border-radius:10px;border:none;font-size:16px;outline:0;font-family:inherit;box-sizing:border-box;color:#fff;background-color:#222;}
     button{width:100%;padding:12px;margin-top:20px;background:linear-gradient(135deg,#dba935,#999);border:none;border-radius:10px;font-size:17px;color:#000;cursor:pointer;font-weight:700;}
     .error-msg{color:#ff6666;margin-top:10px;font-size:14px;min-height:20px;text-align:right;}
-    html[dir="ltr"] .error-msg { text-align: left; }
   </style>
 </head>
 <body>
@@ -31,26 +30,6 @@
       window.location.href = 'dashboard.html';
     }
 
-    // --- دالة JSONP المصححة ---
-    function jsonpRequest(url, data, callback) {
-        const callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-        window[callbackName] = function(response) {
-            delete window[callbackName];
-            document.body.removeChild(script);
-            callback(response);
-        };
-
-        const script = document.createElement('script');
-        // btoa() لتشفير البيانات إلى Base64
-        // encodeURIComponent() للتأكد من أن النص المشفر آمن للإرسال في الرابط
-        const encodedData = encodeURIComponent(btoa(JSON.stringify(data)));
-        
-        // بناء الرابط بالشكل الصحيح
-        script.src = `${url}?callback=${callbackName}&p=${encodedData}`;
-        
-        document.body.appendChild(script);
-    }
-
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -65,13 +44,21 @@
       loginBtn.textContent = 'جاري التحقق...';
       errorMsg.textContent = '';
 
-      const requestPayload = {
-        action: 'login',
-        username: username,
-        password: password
-      };
+      // بناء الرابط مع البيانات كـ query parameters
+      const urlWithParams = new URL(API_URL );
+      urlWithParams.searchParams.append('action', 'login');
+      urlWithParams.searchParams.append('username', username);
+      urlWithParams.searchParams.append('password', password);
 
-      jsonpRequest(API_URL, requestPayload, function(data ) {
+      // استخدام fetch بسيط مع GET
+      fetch(urlWithParams)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
         if (data.success) {
             localStorage.setItem('userEmail', data.email);
             window.location.href = 'dashboard.html';
@@ -80,6 +67,11 @@
             loginBtn.disabled = false;
             loginBtn.textContent = 'دخول';
         }
+      })
+      .catch(error => {
+        errorMsg.textContent = 'فشل الاتصال. حاول مرة أخرى.';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'دخول';
       });
     });
   </script>
