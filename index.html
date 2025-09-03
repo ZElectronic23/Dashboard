@@ -84,7 +84,7 @@
         e.preventDefault();
         const loginBtn = document.getElementById('loginBtn'); const errorMsg = document.getElementById('error-msg');
         const username = document.getElementById('username').value; const password = document.getElementById('password').value;
-        const API_URL = "YOUR_NEW_DEPLOYMENT_URL_HERE"; // *** ضع الرابط الجديد هنا ***
+        const API_URL = "https://script.google.com/macros/s/AKfycbxY4jHtUguk_pjowbt7-bbYNoMoBbe5G8qX7rJBA_4oRvWh39dfz4CNgB-se-9sgwVJ/exec"; // *** ضع الرابط الجديد هنا ***
         loginBtn.disabled = true; loginBtn.textContent = translations[currentLang].verifying; errorMsg.textContent = '';
         const urlWithParams = new URL(API_URL);
         urlWithParams.searchParams.append('action', 'login'); urlWithParams.searchParams.append('username', username); urlWithParams.searchParams.append('password', password);
