@@ -202,7 +202,7 @@ class Auth {
       const data = await response.json();
       
       if (data.success && data.userData) {
-        // Ensure profileImg uses the local path if the API doesn't provide one
+        // Ensure profileImg uses the local path if the API doesn\'t provide one
         if (!data.userData.profileImg || data.userData.profileImg.includes("ibb.co")) {
           data.userData.profileImg = "assets/images/User.webp";
         }
@@ -248,7 +248,7 @@ class Dashboard {
       profileImg: document.getElementById("profileImg"),
       topBarAvatar: document.getElementById("top-bar-avatar"),
       userMenuName: document.getElementById("user-menu-name"),
-      userMenuNameEn: document.getElementById("user-menu-name-en")
+      userMenuJob: document.getElementById("user-menu-job") // New element for job title
     };
 
     if (elements.empName) elements.empName.textContent = userData.empName;
@@ -264,19 +264,11 @@ class Dashboard {
     if (elements.topBarAvatar) elements.topBarAvatar.src = profileImagePath;
     if (elements.userMenuName) elements.userMenuName.textContent = userData.empName;
 
-    // Translate name based on current language
+    // Display job title in the user menu, translated if necessary
     const currentLang = Utils.getCurrentLang();
-    if (currentLang === "ar") {
-      // If current language is Arabic, translate English name to Arabic
-      Utils.translateText(userData.empName, "en", "ar").then(translatedName => {
-        if (elements.userMenuName) elements.userMenuName.textContent = translatedName;
-        if (elements.userMenuNameEn) elements.userMenuNameEn.textContent = userData.empName; // Keep original English name in 'en' field
-      });
-    } else {
-      // If current language is English, translate Arabic name to English
-      Utils.translateText(userData.empName, "ar", "en").then(translatedName => {
-        if (elements.userMenuNameEn) elements.userMenuNameEn.textContent = translatedName;
-        if (elements.userMenuName) elements.userMenuName.textContent = userData.empName; // Keep original Arabic name in 'ar' field
+    if (elements.userMenuJob) {
+      Utils.translateText(userData.empJob, currentLang === "ar" ? "en" : "ar", currentLang).then(translatedJob => {
+        elements.userMenuJob.textContent = translatedJob;
       });
     }
   }

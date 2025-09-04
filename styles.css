@@ -342,6 +342,7 @@ body {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 15px;
   border: 1px solid rgba(219, 169, 53, 0.2);
+  justify-content: center; /* Added for horizontal centering */
 }
 
 .profile-img {
@@ -600,12 +601,12 @@ body {
   }
 
   .profile-section {
-    flex-direction: row;
-    text-align: left;
+    flex-direction: column; /* Changed to column for centering */
+    text-align: center; /* Centered text */
   }
 
   html[dir="rtl"] .profile-section {
-    text-align: right;
+    text-align: center; /* Centered text for RTL */
   }
 
   .cards {
@@ -620,12 +621,12 @@ body {
 /* Desktop Responsive */
 @media (min-width: 769px) {
   .profile-section {
-    flex-direction: row;
-    text-align: left;
+    flex-direction: column; /* Changed to column for centering */
+    text-align: center; /* Centered text */
   }
 
   html[dir="rtl"] .profile-section {
-    text-align: right;
+    text-align: center; /* Centered text for RTL */
   }
 
   .datetime-widget {
