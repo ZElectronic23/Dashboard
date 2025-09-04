@@ -414,7 +414,7 @@ body {
 }
 
 .card::before {
-  content: \'\';
+  content: '';
   position: absolute;
   top: 0;
   left: -100%;
@@ -713,3 +713,5 @@ html[dir="ltr"] .error-msg {
   align-items: center;
   height: 100%;
 }
+
+
