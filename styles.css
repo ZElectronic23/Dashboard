@@ -1,5 +1,6 @@
-/* Z.Electronic Dashboard Styles */
+/* Dashboard Complete Style - Organized & Fixed */
 
+/* Variables */
 :root {
   --gold: #dba935;
   --light: #f0f0f0;
@@ -9,6 +10,7 @@
   --success: #4CAF50;
 }
 
+/* Global Reset */
 * {
   box-sizing: border-box;
 }
@@ -29,7 +31,7 @@ body {
   align-items: center;
 }
 
-/* Top Bar Styles */
+/* Top Bar */
 .top-bar {
   position: fixed;
   top: 0;
@@ -41,7 +43,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 20px;
+  padding: 20px;
   z-index: 1000;
   border-bottom: 1px solid rgba(219, 169, 53, 0.3);
 }
@@ -60,11 +62,12 @@ body {
   transform: translateY(-50%);
 }
 
+/* DateTime Widget Styles */
 .datetime-widget {
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0,0,0,0.7);
   padding: 8px 15px;
   border-radius: 25px;
   font-size: 16px;
@@ -76,7 +79,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   width: fit-content;
-  transition: all 0.3s ease;
+  transition: width 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   user-select: none;
   transform-origin: center;
 }
@@ -89,15 +92,16 @@ body {
   display: inline;
 }
 
-.datetime-widget:hover, .datetime-widget:focus {
-  box-shadow: 0 0 15px rgba(219, 169, 53, 0.6);
-}
-
 .datetime-widget .material-icons {
   font-size: 22px;
   color: var(--gold);
 }
 
+.datetime-widget:hover, .datetime-widget:focus {
+  box-shadow: 0 0 15px rgba(219, 169, 53, 0.6);
+}
+
+/* Language Switcher */
 .lang-switcher {
   cursor: pointer;
   font-weight: bold;
@@ -119,7 +123,7 @@ body {
   box-shadow: 0 0 15px rgba(219, 169, 53, 0.6);
 }
 
-/* Profile Section - تحريك الصورة حسب اللغة */
+/* Profile Section with LTR / RTL image position */
 .profile-section {
   display: flex;
   align-items: center;
@@ -133,12 +137,12 @@ body {
 }
 
 html[dir="rtl"] .profile-section {
-  flex-direction: row-reverse; /* صورة يمين، بيانات يسار */
+  flex-direction: row-reverse; /* profile image right */
   text-align: right;
 }
 
 html[dir="ltr"] .profile-section {
-  flex-direction: row; /* صورة يسار، بيانات يمين */
+  flex-direction: row; /* profile image left */
   text-align: left;
 }
 
@@ -174,28 +178,76 @@ html[dir="ltr"] .profile-section {
   color: var(--gold);
 }
 
-/* Responsive Adjustments */
+/* Responsive */
+
+/* Mobile */
 @media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+  .top-bar {
+    padding: 15px;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .top-bar-left,
+  .top-bar-right {
+    position: static;
+    transform: none;
+  }
   .datetime-widget {
     font-size: 14px;
     padding: 6px 10px;
     gap: 6px;
-    transition: all 0.3s ease;
   }
-
   .datetime-widget .material-icons {
     font-size: 18px;
   }
-
+  .lang-switcher {
+    font-size: 14px;
+    padding: 6px 10px;
+  }
   .profile-img {
     width: 100px;
     height: 100px;
   }
-
   .profile-section {
     padding: 15px;
     gap: 15px;
+    flex-direction: column;
+    text-align: center;
+  }
+  html[dir="rtl"] .profile-section,
+  html[dir="ltr"] .profile-section {
+    flex-direction: column;
+    text-align: center;
   }
 }
 
-/* Tablet and Larger Screens keep previous behaviors */
+/* Tablet */
+@media (min-width: 481px) and (max-width: 768px) {
+  .profile-section {
+    flex-direction: column;
+    text-align: center;
+  }
+  html[dir="rtl"] .profile-section,
+  html[dir="ltr"] .profile-section {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+  .profile-section {
+    flex-direction: row;
+  }
+  html[dir="rtl"] .profile-section {
+    flex-direction: row-reverse;
+    text-align: right;
+  }
+  html[dir="ltr"] .profile-section {
+    flex-direction: row;
+    text-align: left;
+  }
+}
