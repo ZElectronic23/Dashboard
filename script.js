@@ -202,7 +202,7 @@ class Auth {
       const data = await response.json();
       
       if (data.success && data.userData) {
-        // Ensure profileImg uses the local path if the API doesn\'t provide one
+        // Ensure profileImg uses the local path if the API doesn\\\'t provide one
         if (!data.userData.profileImg || data.userData.profileImg.includes("ibb.co")) {
           data.userData.profileImg = "assets/images/User.webp";
         }
@@ -248,7 +248,7 @@ class Dashboard {
       profileImg: document.getElementById("profileImg"),
       topBarAvatar: document.getElementById("top-bar-avatar"),
       userMenuName: document.getElementById("user-menu-name"),
-      userMenuJob: document.getElementById("user-menu-job") // New element for job title
+      userMenuJob: document.getElementById("user-menu-job") // Element for job title
     };
 
     if (elements.empName) elements.empName.textContent = userData.empName;
@@ -262,14 +262,21 @@ class Dashboard {
 
     if (elements.profileImg) elements.profileImg.src = profileImagePath;
     if (elements.topBarAvatar) elements.topBarAvatar.src = profileImagePath;
+    
+    // Display user name
     if (elements.userMenuName) elements.userMenuName.textContent = userData.empName;
 
-    // Display job title in the user menu, translated if necessary
+    // Display and translate job title
     const currentLang = Utils.getCurrentLang();
     if (elements.userMenuJob) {
-      Utils.translateText(userData.empJob, currentLang === "ar" ? "en" : "ar", currentLang).then(translatedJob => {
-        elements.userMenuJob.textContent = translatedJob;
-      });
+      // Check if empJob is available before attempting translation
+      if (userData.empJob) {
+        Utils.translateText(userData.empJob, currentLang === "ar" ? "en" : "ar", currentLang === "ar" ? "ar" : "en").then(translatedJob => {
+          elements.userMenuJob.textContent = translatedJob;
+        });
+      } else {
+        elements.userMenuJob.textContent = ''; // Clear if no job title
+      }
     }
   }
 
