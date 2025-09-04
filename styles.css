@@ -300,14 +300,17 @@ body {
   border: 1px solid rgba(219, 169, 53, 0.2);
   justify-content: center; /* Added for horizontal centering */
 }
+
 html[dir="rtl"] .profile-section {
-  flex-direction: row-reverse; /* Image right, text left for RTL */
+  flex-direction: row-reverse; /* الصورة على اليمين، البيانات على اليسار */
   text-align: right;
 }
+
 html[dir="ltr"] .profile-section {
-  flex-direction: row; /* Image left, text right for LTR */
+  flex-direction: row; /* الصورة على اليسار، البيانات على اليمين */
   text-align: left;
 }
+
 .profile-img {
   width: 120px;
   height: 120px;
