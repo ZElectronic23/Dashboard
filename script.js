@@ -56,7 +56,8 @@ class Utils {
   static setLanguage(lang) {
     localStorage.setItem("lang", lang);
     document.documentElement.lang = lang;
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.documentElement.dir = selectedLang === "ar" ? "rtl" : "ltr";
+
     
     const langSwitcher = document.getElementById("lang-switcher");
     if (langSwitcher) {
