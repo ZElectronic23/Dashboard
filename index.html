@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Z.Electronic | Login</title>
+  <link rel="icon" type="image/x-icon" href="LOGO ICO.png"> 
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="top-bar">
+    <div class="top-bar-left">
+        <button class="lang-switcher" id="lang-switcher" title="Switch Language" type="button">EN</button>
+    </div>
+    <div class="top-bar-right">
+        <div class="datetime-widget">
+            <span id="time-icon" class="material-icons"></span>
+            <span id="time"></span>
+            <span id="date"></span>
+        </div>
+    </div>
+  </div>
+
+  <div class="login-container">
+    <div class="login-box">
+      <h2 data-translate="login_title">تسجيل الدخول</h2>
+      <form id="loginForm">
+        <div class="input-group">
+          <input id="username" type="text" data-translate-placeholder="username_placeholder" placeholder="اسم المستخدم" required autocomplete="username" />
+        </div>
+        <div class="input-group">
+          <input id="password" type="password" data-translate-placeholder="password_placeholder" placeholder="كلمة المرور" required autocomplete="current-password" />
+        </div>
+        <div id="error-msg" class="error-msg"></div>
+        <button id="loginBtn" type="submit" data-translate="login_button">دخول</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
+
