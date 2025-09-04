@@ -398,4 +398,3 @@ document.addEventListener("DOMContentLoaded", function() {
   setInterval(Utils.updateClock, 1000);
 });
 
-

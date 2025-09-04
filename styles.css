@@ -23,6 +23,9 @@ body {
   color: var(--light);
   min-height: 100vh;
   line-height: 1.6;
+  display: flex; /* Added for centering */
+  justify-content: center; /* Added for centering */
+  align-items: center; /* Added for centering */
 }
 
 /* Top Bar Styles */
@@ -45,14 +48,14 @@ body {
 .top-bar-left {
   position: absolute;
   left: 20px; /* Adjusted position */
-  top: 50%;
+  top: 60px; /* Moved down */
   transform: translateY(-50%);
 }
 
 .top-bar-right {
   position: absolute;
   right: 20px; /* Adjusted position */
-  top: 50%;
+  top: 60px; /* Moved down */
   transform: translateY(-50%);
 }
 
@@ -190,8 +193,8 @@ body {
 .login-container {
   width: 100%;
   max-width: 400px;
-  margin: 0 auto;
   padding: 20px;
+  /* Removed margin: 0 auto; and added flex properties to body for centering */
 }
 
 .login-box {
@@ -219,7 +222,7 @@ body {
 }
 
 .login-box input {
-  width: calc(100% - 40px); /* Adjusted width to account for padding */
+  width: 100%; /* Changed back to 100% and will rely on padding of parent */
   padding: 15px 20px;
   border-radius: 12px;
   border: 2px solid transparent;
@@ -525,7 +528,7 @@ body {
   }
 
   .login-box input {
-    width: calc(100% - 30px); /* Adjusted width for mobile */
+    width: 100%; /* Changed back to 100% */
     padding: 12px 15px;
     font-size: 14px;
   }
